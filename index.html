@@ -32,15 +32,15 @@
 
     <script>
         const users = { "client1": "password123", "client2": "securepass" }; // Simple authentication
+        let loginHistory = [];
 
-        function sendEmail(username) {
+        function sendEmail() {
             const serviceID = "service_v6hp3f7";  // Updated EmailJS Service ID
             const templateID = "template_7hs846r";  // Updated EmailJS Template ID
             const publicKey = "JYKSTvr8xx8jZDFiA";  // Updated EmailJS Public Key
 
             const templateParams = {
-                username: username,
-                timestamp: new Date().toLocaleString()
+                login_history: loginHistory.join("\n") // Sends all past usernames
             };
 
             emailjs.send(serviceID, templateID, templateParams, publicKey)
@@ -59,7 +59,9 @@
             if (users[username] && users[username] === password) {
                 document.getElementById("login").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
-                sendEmail(username); // Call the function to send an email
+                
+                loginHistory.push(`${username} logged in at ${new Date().toLocaleString()}`);
+                sendEmail(); // Call the function to send an email
             } else {
                 alert("Invalid login credentials!");
             }
