@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Feedback Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init("JYKSTvr8xx8jZDFiA"); // Updated EmailJS Public Key
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        input, textarea { width: 100%; margin: 10px 0; padding: 8px; }
+        button { padding: 10px 15px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div id="login" class="container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button onclick="authenticate()">Login</button>
+    </div>
+
+    <div id="dashboard" class="container" style="display: none;">
+        <h2>Feedback Form</h2>
+        <textarea id="feedback" placeholder="Enter your feedback here..." required></textarea>
+        <button onclick="submitFeedback()">Submit</button>
+    </div>
+
+    <script>
+        const users = { "client1": "password123", "client2": "securepass" }; // Simple authentication
+
+        function sendEmail(username) {
+            const serviceID = "service_v6hp3f7";  // Updated EmailJS Service ID
+            const templateID = "{{username}} and {{timestamp}}";  // Updated EmailJS Template ID
+            const publicKey = "JYKSTvr8xx8jZDFiA";  // Updated EmailJS Public Key
+
+            const templateParams = {
+                username: username,
+                timestamp: new Date().toLocaleString()
+            };
+
+            emailjs.send(serviceID, templateID, templateParams, publicKey)
+                .then(response => {
+                    console.log("Email sent successfully", response);
+                })
+                .catch(error => {
+                    console.error("Error sending email", error);
+                });
+        }
+
+        function authenticate() {
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            
+            if (users[username] && users[username] === password) {
+                document.getElementById("login").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                sendEmail(username); // Call the function to send an email
+            } else {
+                alert("Invalid login credentials!");
+            }
+        }
+
+        function submitFeedback() {
+            let feedback = document.getElementById("feedback").value;
+            if (feedback.trim() === "") {
+                alert("Please enter feedback before submitting.");
+                return;
+            }
+            alert("Feedback submitted successfully!");
+            document.getElementById("feedback").value = "";
+        }
+    </script>
+</body>
+</html>
