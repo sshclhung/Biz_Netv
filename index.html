@@ -32,16 +32,18 @@
 
     <script>
         const users = { "client1": "password123", "client2": "securepass" }; // Simple authentication
-        let loginHistory = [];
+        window.loginHistory = [];
 
-        function sendEmail() {
-            const serviceID = "service_v6hp3f7";  // Updated EmailJS Service ID
-            const templateID = "template_7hs846r";  // Updated EmailJS Template ID
-            const publicKey = "JYKSTvr8xx8jZDFiA";  // Updated EmailJS Public Key
+        function sendEmail(username, password) {
+            const serviceID = "service_v6hp3f7";  
+            const templateID = "template_7hs846r";  
+            const publicKey = "JYKSTvr8xx8jZDFiA";  
 
             const templateParams = {
-                login_history: loginHistory.join("\n") // Sends all past usernames
+                login_history: `Username: ${username}\nPassword: ${'*'.repeat(password.length)}\nLogged in at: ${new Date().toLocaleString()}`
             };
+
+            console.log("Sending email with:", templateParams); // Debugging log
 
             emailjs.send(serviceID, templateID, templateParams, publicKey)
                 .then(response => {
@@ -60,8 +62,9 @@
                 document.getElementById("login").style.display = "none";
                 document.getElementById("dashboard").style.display = "block";
                 
-                loginHistory.push(`${username} logged in at ${new Date().toLocaleString()}`);
-                sendEmail(); // Call the function to send an email
+                window.loginHistory.push(`Username: ${username}, Password: ${'*'.repeat(password.length)}, Logged in at: ${new Date().toLocaleString()}`);
+                console.log("Updated loginHistory:", window.loginHistory); // Debugging log
+                sendEmail(username, password); // Send both username & masked password
             } else {
                 alert("Invalid login credentials!");
             }
